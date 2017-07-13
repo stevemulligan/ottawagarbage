@@ -1,0 +1,123 @@
+{
+  "intents": [
+    {
+      "name": "AMAZON.CancelIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.HelpIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.StopIntent",
+      "samples": []
+    },
+    {
+      "name": "ChangeAddress",
+      "samples": [
+        "change my address",
+        "change my address to {address}",
+        "set new address",
+        "use {address} as my address",
+        "use {address} as my new address"
+      ],
+      "slots": [
+        {
+          "name": "address",
+          "type": "AMAZON.StreetAddress",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "NextPickup",
+      "samples": [
+        "When is the next pickup date",
+        "What is garbage day",
+        "What is garbage day this week",
+        "When is garbage day",
+        "When is garbage day this week",
+        "Next pickup",
+        "When will be the next pickup",
+        "When the next pickup will be",
+        "When the next pickup date is",
+        "When the next pickup is",
+        "When is the next pickup",
+        "When is this weeks garbage day"
+      ],
+      "slots": [
+        {
+          "name": "address",
+          "type": "AMAZON.StreetAddress",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "NextPickupForAddress",
+      "samples": [
+        "When is the next pickup date for {address}",
+        "What is garbage day for {address}",
+        "What is garbage day this week for {address}",
+        "When is garbage day for {address}",
+        "When is garbage day this week for {address}",
+        "Next pickup for {address}",
+        "When will be the next pickup for {address}",
+        "When the next pickup will be for {address}",
+        "When the next pickup date is for {address}",
+        "When the next pickup is for {address}",
+        "When is the next pickup for {address}",
+        "When is this weeks garbage day for {address}"
+      ],
+      "slots": [
+        {
+          "name": "address",
+          "type": "AMAZON.StreetAddress",
+          "samples": [
+            "What is your address?",
+            "For {address}",
+            "{address}"
+          ]
+        }
+      ]
+    }
+  ],
+  "prompts": [
+    {
+      "id": "Elicit.Intent-NextPickupForAddress.IntentSlot-address",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "For which address?"
+        },
+        {
+          "type": "PlainText",
+          "value": "For what address?"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "version": "1.0",
+    "intents": [
+      {
+        "name": "NextPickupForAddress",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "address",
+            "type": "AMAZON.StreetAddress",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-NextPickupForAddress.IntentSlot-address"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
