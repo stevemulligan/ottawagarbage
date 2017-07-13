@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
-app.config['ASK_VERIFY_REQUESTS'] = True
+app.config['ASK_VERIFY_REQUESTS'] = config['verify_requests']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqldb://%(database_user)s:%(database_password)s@%(database_host)s/%(database_name)s" % config
 
