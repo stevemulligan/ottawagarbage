@@ -15,6 +15,11 @@ app = Flask(__name__)
 
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_error_logger.handlers)
+app.logger.setLevel(logging.DEBUG)
+app.logger.debug('this will show in the log')
+
 app.config['ASK_VERIFY_REQUESTS'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqldb://%(database_user)s:%(database_password)s@%(database_host)s/%(database_name)s" % config
@@ -29,8 +34,11 @@ def next_pickup_for_address(address):
         if ask.request.dialogState == 'COMPLETED':
            new_address = full_address(address)
            location = location_from_address(new_address)
-           x, y = position_from_location(location)
-           return pickup_statement_for(x, y)
+           if (location == None):
+               return statement("I don't know the address " + address + ". Try a different address near by.")
+           else:
+               x, y = position_from_location(location)
+               return pickup_statement_for(x, y)
         else:
            return dialog(delegate())
     return dialog(elicit('For what address?'))
@@ -41,7 +49,10 @@ def change_address(address):
     user_id = ask.context.System.user.userId
     if address != None:
         if ask.request.dialogState == 'COMPLETED':
-           return pickup_statement_for(res['x'], res['y'])
+           new_address = set_address_for_user(address, user_id)
+           if (new_address == None):
+               return statement("I don't know the address " + address + ". Try a different address near by.") 
+           return statement("Your new address is " + new_address)
         else:
            return dialog(delegate())
     return dialog(elicit('What is your new address?'))
@@ -50,9 +61,13 @@ def set_address_for_user(address, user_id):
     connection = db.engine.connect()
     new_address = full_address(address)
     location = location_from_address(new_address)
+    if (location == None):
+        return None
     x, y = position_from_location(location)
     latlong = str(location.latitude) + ',' + str(location.longitude)
+    connection.execute(text("delete from addresses where user_id=:user_id").bindparams(user_id=user_id))
     connection.execute(text("insert into addresses (user_id, address, latlong, position) values (:user_id, :address, :latlong, POINT(:x, :y))"), user_id=user_id, address=new_address, latlong=latlong, x=x, y=y)
+    return new_address
 
 def get_xy_for_user(user_id):
     connection = db.engine.connect()
