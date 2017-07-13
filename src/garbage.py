@@ -15,12 +15,7 @@ app = Flask(__name__)
 
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
-gunicorn_error_logger = logging.getLogger('gunicorn.error')
-app.logger.handlers.extend(gunicorn_error_logger.handlers)
-app.logger.setLevel(logging.DEBUG)
-app.logger.debug('this will show in the log')
-
-app.config['ASK_VERIFY_REQUESTS'] = False
+app.config['ASK_VERIFY_REQUESTS'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqldb://%(database_user)s:%(database_password)s@%(database_host)s/%(database_name)s" % config
 
