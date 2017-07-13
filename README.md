@@ -28,6 +28,13 @@ git checkout https://github.com/stevemulligan/flask-ask
 cd flask-ask
 python setup.py install
 ```
+
+Use pip to install all the requirements.
+
+```
+pip install -r requirements.txt
+```
+
 # Server
 
 I use gunicorn to host the application.
