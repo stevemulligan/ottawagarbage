@@ -47,7 +47,9 @@
         "When the next pickup date is",
         "When the next pickup is",
         "When is the next pickup",
-        "When is this weeks garbage day"
+        "When is this weeks garbage day",
+        "What is the next garbage day this week",
+        "When is the next garbage day"
       ],
       "slots": [
         {
