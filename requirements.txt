@@ -1,0 +1,7 @@
+SQLAlchemy==1.1.11
+configobj==5.0.6
+Flask_Ask==0.9.4
+pyproj==1.9.5.1
+Flask==0.12.1
+Flask_SQLAlchemy==2.2
+geopy==1.11.0
