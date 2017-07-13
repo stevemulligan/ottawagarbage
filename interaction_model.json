@@ -19,7 +19,11 @@
         "change my address to {address}",
         "set new address",
         "use {address} as my address",
-        "use {address} as my new address"
+        "use {address} as my new address",
+        "update my address to {address}",
+        "update my address",
+        "setup a new address",
+        "set a new address"
       ],
       "slots": [
         {
