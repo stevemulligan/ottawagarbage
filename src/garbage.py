@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
-from flask_ask import Ask, statement, dialog, elicit, delegate
+from flask_ask import Ask, statement, dialog, elicit, delegate, question
 from configobj import ConfigObj
 from geopy.geocoders import GoogleV3
 from pyproj import Proj, transform
@@ -30,13 +30,13 @@ def next_pickup_for_address(address):
            new_address = full_address(address)
            location = location_from_address(new_address)
            if (location == None):
-               return statement("I don't know the address " + address + ". Try a different address near by.")
+               return question("I don't know the address " + address + ". Try a different address near by.")
            else:
                x, y = position_from_location(location)
-               return pickup_statement_for(x, y)
+               return statement("For " + new_address + ", " + pickup_statement_for(x, y))
         else:
            return dialog(delegate())
-    return dialog(elicit('For what address?'))
+    return dialog(elicit('address', 'For what address?'))
 
 @ask.intent('ChangeAddress')
 def change_address(address):
@@ -46,11 +46,11 @@ def change_address(address):
         if ask.request.dialogState == 'COMPLETED':
            new_address = set_address_for_user(address, user_id)
            if (new_address == None):
-               return statement("I don't know the address " + address + ". Try a different address near by.") 
+               return question("I don't know the address " + address + ". Try a different address near by.") 
            return statement("Your new address is " + new_address)
         else:
            return dialog(delegate())
-    return dialog(elicit('What is your new address?'))
+    return dialog(elicit('address', 'What is your new address?'))
 
 def set_address_for_user(address, user_id):
     connection = db.engine.connect()
@@ -67,7 +67,24 @@ def set_address_for_user(address, user_id):
 def get_xy_for_user(user_id):
     connection = db.engine.connect()
     result = connection.execute(text("select id, st_x(position) x, st_y(position) y from addresses where user_id = :user_id").bindparams(user_id=user_id)).first()
-    return result[x], result[y]
+    return result['x'], result['y']
+
+@ask.intent('CurrentAddress')
+def current_address():
+    connection = db.engine.connect()
+    user_id = ask.context.System.user.userId
+    result = connection.execute(text("select address from addresses where user_id = :user_id").bindparams(user_id=user_id)).first()
+    if result == None:
+       return statement('I have no address on file for you at the moment')
+    return statement('Your address is ' + result['address'])
+
+@ask.launch
+def start_skill():
+    return question('Do you want to know the next pickup date?')
+
+@ask.intent('No')
+def no_intent():
+    return statement('Have a nice day then eh!')
 
 @ask.intent('NextPickup')
 def next_pickup(address):
@@ -75,9 +92,11 @@ def next_pickup(address):
     user_id = ask.context.System.user.userId
     if address != None:
         if ask.request.dialogState == 'COMPLETED':
-            set_address_for_user(address, user_id)
+            new_address = set_address_for_user(address, user_id)
+            if (new_address == None):
+               return question("I don't know the address " + address + ". Try a different address near by.")
             x,y = get_xy_for_user(user_id)
-            return pickup_statement_for(x, y)
+            return statement(pickup_statement_for(x, y))
         else:
             return dialog(delegate())
     result = connection.execute(text("select id, st_x(position) x, st_y(position) y from addresses where user_id = :user_id").bindparams(user_id=user_id))
@@ -85,7 +104,7 @@ def next_pickup(address):
         return dialog(elicit('address', 'What is your address'))
     else:
         res = result.first()
-        return pickup_statement_for(res['x'], res['y'])
+        return statment(pickup_statement_for(res['x'], res['y']))
 
 def pickup_statement_for(x, y):
     connection = db.engine.connect()
@@ -121,7 +140,7 @@ def pickup_statement_for(x, y):
 
     pickup_type, next_pickup_type = pickup_type_str(pickup_res['schedule'][0], week_number)
 
-    return statement(pickup_type + " " + pickup_str + " " + next_pickup_type + " " + next_pickup_str)
+    return pickup_type + " " + pickup_str + " " + next_pickup_type + " " + next_pickup_str
 
 def pickup_type_str(schedule, week_number):
     pickup_order = ['Recycling', 'Garbage']

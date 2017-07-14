@@ -34,6 +34,18 @@
       ]
     },
     {
+      "name": "CurrentAddress",
+      "samples": [
+        "What is my address",
+        "What is my address set to",
+        "What is my current address",
+        "What are you using for my address",
+        "What is my current address set to",
+        "What's my address"
+      ],
+      "slots": []
+    },
+    {
       "name": "NextPickup",
       "samples": [
         "When is the next pickup date",
@@ -49,7 +61,12 @@
         "When is the next pickup",
         "When is this weeks garbage day",
         "What is the next garbage day this week",
-        "When is the next garbage day"
+        "When is the next garbage day this week",
+        "When is the next garbage day",
+        "When's garbage day",
+        "Yes",
+        "Yes I do",
+        "I do"
       ],
       "slots": [
         {
@@ -73,7 +90,11 @@
         "When the next pickup date is for {address}",
         "When the next pickup is for {address}",
         "When is the next pickup for {address}",
-        "When is this weeks garbage day for {address}"
+        "When is this weeks garbage day for {address}",
+        "What is the next garbage day this week for {address}",
+        "When is the next garbage day this week for {address}",
+        "When is the next garbage day for {address}",
+        "Yes for {address}"
       ],
       "slots": [
         {
@@ -86,6 +107,17 @@
           ]
         }
       ]
+    },
+    {
+      "name": "No",
+      "samples": [
+        "No",
+        "Nope",
+        "Nah",
+        "Not right now",
+        "Not now"
+      ],
+      "slots": []
     }
   ],
   "prompts": [
