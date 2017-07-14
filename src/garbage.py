@@ -104,7 +104,7 @@ def next_pickup(address):
         return dialog(elicit('address', 'What is your address'))
     else:
         res = result.first()
-        return statment(pickup_statement_for(res['x'], res['y']))
+        return statement(pickup_statement_for(res['x'], res['y']))
 
 def pickup_statement_for(x, y):
     connection = db.engine.connect()
