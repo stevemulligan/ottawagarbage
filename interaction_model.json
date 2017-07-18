@@ -66,7 +66,8 @@
         "When's garbage day",
         "Yes",
         "Yes I do",
-        "I do"
+        "I do",
+        "When is the next pickup day"
       ],
       "slots": [
         {
