@@ -22,6 +22,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqldb://%(database_user)s:%(dat
 db = SQLAlchemy(app)
 ask = Ask(app, '/')
 
+@ask.intent('AMAZON.StopIntent')
+def stop():
+    return statement('Ok')
+
+@ask.intent('AMAZON.CancelIntent')
+def cancel():
+    return statement('Ok')
+
+@ask.intent('AMAZON.HelpIntent')
+def help():
+    return question('Ottawa Garbage can tell you the next time garbage or recycling will be picked up by asking When is the next pickup date?  Or you can give a specific address like, When is the next pickup date for 190 Main Street?  You can change your address by saying Change my address to 190 Main Street.  You can ask for your current address by asking What is my address.  What would you like to do now?')
+
 @ask.intent('NextPickupForAddress')
 def next_pickup_for_address(address):
     connection = db.engine.connect()
