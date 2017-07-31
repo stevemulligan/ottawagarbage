@@ -108,7 +108,7 @@ def next_pickup(address):
             if (new_address == None):
                return question("I don't know the address " + address + ". Try a different address near by.")
             x,y = get_xy_for_user(user_id)
-            return statement(pickup_statement_for(x, y))
+            return statement("For " + new_address + ", " + pickup_statement_for(x, y))
         else:
             return dialog(delegate())
     result = connection.execute(text("select id, st_x(position) x, st_y(position) y from addresses where user_id = :user_id").bindparams(user_id=user_id))
