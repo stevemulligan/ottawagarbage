@@ -13,8 +13,9 @@ config = ConfigObj("../.env")
 
 app = Flask(__name__)
 
-logging.getLogger("flask_ask").setLevel(logging.DEBUG)
-
+log = logging.getLogger("flask_ask")
+log.setLevel(logging.DEBUG)
+log.info("Lets go!")
 app.config['ASK_VERIFY_REQUESTS'] = config['verify_requests']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqldb://%(database_user)s:%(database_password)s@%(database_host)s/%(database_name)s" % config
@@ -142,6 +143,7 @@ def pickup_statement_for(x, y):
         pickup_str = 'will be picked up on ' + weekdays[pickup_day] + '.'
 
     next_pickup_day_res = connection.execute(text("SELECT date_add(date_add(DATE_ADD(CURDATE(), INTERVAL - WEEKDAY(CURDATE()) DAY), interval 7 day), interval :days day) dt").bindparams(days=pickup_res['pickup_day'])).first()
+    log.debug("next pickup date: " + str(next_pickup_day_res['dt']))
     next_offset = days_to_offset(next_pickup_day_res['dt'])
     next_pickup_day = pickup_res['pickup_day'] + next_offset
 
