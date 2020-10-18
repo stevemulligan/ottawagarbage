@@ -24,7 +24,7 @@ verify_requests = True
 It is currently require that you use a fork of flask-ask to run the alexa skill.  This version of flask-ask includes some support for Alexa dialog that was added recently.
 
 ```
-git checkout https://github.com/stevemulligan/flask-ask
+git clone https://github.com/stevemulligan/flask-ask.git
 cd flask-ask
 python setup.py install
 ```
