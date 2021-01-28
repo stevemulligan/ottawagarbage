@@ -1,4 +1,5 @@
 import shapefile
+import pprint
 from geomet import wkt
 import pprint
 from sqlalchemy.sql import text
@@ -17,9 +18,12 @@ day_number = {'MONDAY': 0, 'TUESDAY': 1, 'WEDNESDAY': 2, 'THURSDAY': 3, 'FRIDAY'
 
 records = sf.records()
 i = 0
+pp = pprint.PrettyPrinter(indent=4)
+
 for r in records:
-  pickup_day = day_number[r[0]]
-  schedule = r[1]
+  pp.pprint(r)
+  pickup_day = day_number[r[1]]
+  schedule = r[3]
   shape = sf.shapeRecord(i).shape
   areastr = wkt.dumps(shape.__geo_interface__)
   connection.execute(text("insert into routes (pickup_day, schedule, area, areastr) values (:pickup_day, :schedule, ST_GeomFromText(:areastr), :areastr)").bindparams(pickup_day=pickup_day, schedule=schedule, areastr=areastr))

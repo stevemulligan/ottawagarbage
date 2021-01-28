@@ -122,7 +122,9 @@ def next_pickup(address):
 def pickup_statement_for(x, y):
     connection = db.engine.connect()
     weekdays = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
-    pickup_res = connection.execute(text("select * from routes where st_contains(area, point(:x, :y))").bindparams(x=x, y=y)).first()
+    log.debug("X: " + str(x))
+    log.debug("Y: " + str(y))
+    pickup_res = connection.execute(text("select * from routes where st_contains(area, point(:x, :y))").bindparams(x=y, y=x)).first()
     pickup_day_res = connection.execute(text("SELECT date_add(DATE_ADD(CURDATE(), INTERVAL - WEEKDAY(CURDATE()) DAY), interval :days day) dt").bindparams(days=pickup_res['pickup_day'])).first()
     offset = days_to_offset(pickup_day_res['dt'])
     pickup_day = pickup_res['pickup_day'] + offset
@@ -157,7 +159,7 @@ def pickup_statement_for(x, y):
     return pickup_type + " " + pickup_str + " " + next_pickup_type + " " + next_pickup_str
 
 def pickup_type_str(schedule, week_number):
-    pickup_order = ['Recycling', 'Garbage']
+    pickup_order = ['Garbage', 'Recycling']
     if (schedule == 'A'):
         pickup_order = list(reversed(pickup_order))
 
@@ -189,7 +191,7 @@ def position_from_location(location):
     outProj = Proj(init='epsg:2951')
     inProj = Proj(init='epsg:4326')
     x,y = transform(inProj,outProj,location.longitude,location.latitude)
-    return x,y
+    return location.latitude,location.longitude
  
 
 if __name__ == '__main__':
