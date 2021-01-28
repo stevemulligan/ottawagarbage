@@ -11,7 +11,7 @@ engine = create_engine(database_uri)
 connection = engine.connect()
 connection.execute(text("delete from routes"))
 
-sf = shapefile.Reader("garbage-and-recycling-schedules.shp/garbage-and-recycling-schedules.shp")
+sf = shapefile.Reader("Solid_Waste_Collection_Calendar-shp/Solid_Waste_Collection_Calendar.shp")
 
 day_number = {'MONDAY': 0, 'TUESDAY': 1, 'WEDNESDAY': 2, 'THURSDAY': 3, 'FRIDAY': 4, 'SATURDAY': 5, 'SUNDAY': 6}
 
